@@ -1,3 +1,5 @@
+# just built a working API proxy from scratch. Token auth, async HTTP, the 200-but-errors GraphQL trap, response reshaping, edge-case handling. That's the whole backend slice.
+
 import httpx
 from fastapi import APIRouter, HTTPException
 from app.config import settings
@@ -27,7 +29,7 @@ async def get_status():
     variables = {
         "input": {
             "projectId": settings.railway_project_id,
-            "serviceId": settings.railway_partida_service_id
+            "serviceId": settings.railway_service_id,
         }
     }
 
