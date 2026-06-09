@@ -1,6 +1,3 @@
-# just built a working API proxy from scratch. Token auth, async HTTP, the 200-but-errors GraphQL trap, response reshaping, edge-case handling. That's the whole backend slice
-
-import os
 import httpx
 from fastapi import APIRouter, HTTPException
 from app.config import settings
