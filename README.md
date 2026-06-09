@@ -2,13 +2,11 @@
 
 A read-only service that proxies a platform API, reshapes the data, and surfaces deploy health across projects.
 
+<img src="/assets/filename" alt="railway_health_proxy_pixel_train" />
+
 ## Stack
 
-- **Backend** — FastAPI proxy that queries Railway's GraphQL API and returns a trimmed `{ latest, history }` shape.
-- **Frontend** — Vite + React status card.
-
 ## Structure
-
 ```
 deploy-dashboard/
 ├── backend/    # FastAPI service
