@@ -40,10 +40,11 @@ async def get_status():
                 "variables": variables,
             }
         )
-    payload = response.json()
 
     if response.status_code != 200:
         raise HTTPException(status_code=502, detail="Railway API error")
+    
+    payload = response.json()
 
     if "errors" in payload:
         raise HTTPException(status_code=502, detail="Railway GraphQL error")
