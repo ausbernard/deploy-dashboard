@@ -9,13 +9,28 @@ RAILWAY_API = "https://backboard.railway.com/graphql/v2"
 QUERY = """
 query deployments($input: DeploymentListInput!) {
   deployments(input: $input, first: 10) {
-    edges { node { id status createdAt } }
+    edges { node { id status createdAt meta environment { name } service { name } } }
   }
 }
 """
 
 EXCLUDED_STATUSES = {"REMOVED"}
 
+def shape_deployment(node):
+    meta = node.get("meta") or {}
+    env = node.get("environment") or {}
+    repo = meta.get("repo")
+    commit = meta.get("commitHash")
+    return {
+        "id": node.get("id"),
+        "status": node.get("status"), 
+        "createdAt": node.get("createdAt"), 
+        "commit": commit[:7] if commit else None, 
+        "branch": meta.get("branch"), 
+        "environment": env.get("name"), 
+        "commitAuthor": meta.get("commitAuthor"),
+        "url": f"https://github.com/{repo}/actions" if repo else None,
+    }
 
 @router.get("/api/status")
 async def get_status():
@@ -59,7 +74,10 @@ async def get_status():
     latest = sorted_nodes[0]
     history = sorted_nodes[1:]
 
+    service_name = (latest.get("service") or {}).get("name")
+
     return {
-        "latest": latest,
-        "history": history,
+        "serviceName": service_name,
+        "latest": shape_deployment(latest),
+        "history": [shape_deployment(n) for n in history],
     }

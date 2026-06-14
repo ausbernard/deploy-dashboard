@@ -1,7 +1,7 @@
 # Farol
 *lighthouse* - in Portuguese.
 
-<img src="/assets/railway_health_proxy_pixel_train.svg" alt="railway_health_proxy_pixel_train" />
+<img src="/assets/farol-lighthouse.svg" alt=" lighthouse illustration in a playful, hand-drawn style" />
 
 
 A read-only service that proxies a platform API, reshapes the data, and surfaces deploy health across projects.
