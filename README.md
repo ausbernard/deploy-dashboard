@@ -1,8 +1,10 @@
-# Deploy Dashboard
-
-A read-only service that proxies a platform API, reshapes the data, and surfaces deploy health across projects.
+# Farol
+*lighthouse* - in Portuguese.
 
 <img src="/assets/railway_health_proxy_pixel_train.svg" alt="railway_health_proxy_pixel_train" />
+
+
+A read-only service that proxies a platform API, reshapes the data, and surfaces deploy health across projects.
 
 ## Stack
 
