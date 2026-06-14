@@ -26,10 +26,16 @@ async function realFetch(signal) {
   return res.json();
 }
 
+const THEMES = {
+  light: "linear-gradient(145deg, #bcc8c2 0%, #ccd8d2 45%, #bec9c4 100%)",
+  dark:  "linear-gradient(145deg, #1c1c22 0%, #242429 45%, #1a1a20 100%)",
+};
+
 export default function StatusCard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [dark, setDark] = useState(false);
   const abortRef = useRef(null);
 
   const load = useCallback(async ({ silent } = {}) => {
@@ -64,15 +70,40 @@ export default function StatusCard() {
       <div
         style={{
           minHeight: "100vh",
-          background:
-            "radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,0.18), transparent 60%), #0a0a0f",
+          background: dark ? THEMES.dark : THEMES.light,
+          transition: "background 0.4s ease",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           padding: "32px",
           fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace",
+          position: "relative",
         }}
       >
+        <button
+          onClick={() => setDark(d => !d)}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          style={{
+            position: "fixed",
+            top: 20,
+            right: 20,
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            border: dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.12)",
+            background: dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 17,
+            lineHeight: 1,
+            transition: "background 0.3s, border-color 0.3s",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          {dark ? "☀️" : "🌙"}
+        </button>
         <Shell serviceName={data?.serviceName}>
           {loading && !data && <LoadingState />}
           {error && <ErrorState message={error} onRetry={() => load()} />}
@@ -88,12 +119,12 @@ function Shell({ children, serviceName }) {
     <div
       style={{
         width: 380,
-        background: "linear-gradient(180deg, #15151d 0%, #101015 100%)",
-        border: "1px solid #26263340",
-        borderRadius: 18,
+        background: "linear-gradient(180deg, #1e1e27 0%, #16161d 100%)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 22,
         overflow: "hidden",
         boxShadow:
-          "0 24px 60px -24px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset",
+          "0 32px 80px -24px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset",
       }}
     >
       <Header serviceName={serviceName} />
@@ -107,24 +138,24 @@ function Header({ serviceName }) {
     <div
       style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "16px 18px", borderBottom: "1px solid #20202b",
+        padding: "18px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)",
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div
           style={{
-            width: 26, height: 26, borderRadius: 7, background: "#1a1a24",
-            border: "1px solid #2a2a38", display: "flex",
+            width: 28, height: 28, borderRadius: 8, background: "#25252f",
+            border: "1px solid rgba(255,255,255,0.08)", display: "flex",
             alignItems: "center", justifyContent: "center", fontSize: 13,
           }}
         >
           🚂
         </div>
         <div style={{ textAlign: "left" }}>
-          <div style={{ color: "#e4e4e7", fontSize: 13, fontWeight: 600 }}>
+          <div style={{ color: "#f4f4f5", fontSize: 13, fontWeight: 600, letterSpacing: "-0.01em" }}>
             Railway Deployment
           </div>
-          <div style={{ color: "#52525b", fontSize: 12, marginTop: 1 }}>
+          <div style={{ color: "#52525b", fontSize: 12, marginTop: 2 }}>
             {serviceName ?? "—"}
           </div>
         </div>
@@ -174,11 +205,11 @@ function CardBody({ data, refreshing }) {
             style={{
               marginTop: 16, display: "flex", alignItems: "center",
               justifyContent: "center", gap: 8, width: "100%",
-              boxSizing: "border-box", padding: "11px 0", borderRadius: 10,
-              background: "linear-gradient(180deg, #7c3aed, #6d28d9)",
+              boxSizing: "border-box", padding: "11px 0", borderRadius: 11,
+              background: "linear-gradient(180deg, #a78bfa, #8b5cf6)",
               color: "#fff", fontSize: 12.5, fontWeight: 600,
               textDecoration: "none",
-              boxShadow: "0 8px 20px -8px rgba(124,58,237,0.7)",
+              boxShadow: "0 8px 24px -8px rgba(167,139,250,0.5)",
             }}
           >
             View Source ↗
@@ -187,7 +218,7 @@ function CardBody({ data, refreshing }) {
       </div>
 
       {data.history?.length > 0 && (
-        <div style={{ borderTop: "1px solid #20202b", padding: "12px 18px 16px" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "12px 20px 18px" }}>
           <div
             style={{
               color: "#52525b", fontSize: 10, letterSpacing: 1.5,
@@ -203,7 +234,7 @@ function CardBody({ data, refreshing }) {
                 key={i}
                 style={{
                   display: "flex", alignItems: "center", gap: 10, padding: "11px 0",
-                  borderBottom: i < data.history.length - 1 ? "1px solid #18181f" : "none",
+                  borderBottom: i < data.history.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
                 }}
               >
                 <Dot color={hs.dot} />
@@ -229,7 +260,7 @@ function LoadingState() {
       <span
         style={{
           width: 22, height: 22, borderRadius: "50%",
-          border: "2px solid #2a2a38", borderTopColor: "#7c3aed",
+          border: "2px solid rgba(255,255,255,0.08)", borderTopColor: "#a78bfa",
           animation: "spin 0.8s linear infinite",
         }}
       />
@@ -263,7 +294,7 @@ function ErrorState({ message, onRetry }) {
         onClick={onRetry}
         style={{
           marginTop: 4, padding: "8px 18px", borderRadius: 9,
-          background: "#1a1a24", border: "1px solid #2a2a38",
+          background: "#25252f", border: "1px solid rgba(255,255,255,0.08)",
           color: "#d4d4d8", fontSize: 12, fontWeight: 600, cursor: "pointer",
           fontFamily: "inherit",
         }}
